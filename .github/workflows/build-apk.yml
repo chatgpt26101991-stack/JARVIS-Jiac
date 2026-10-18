@@ -22,8 +22,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Instalar Android SDK
-        uses: android-actions/setup-android@v3
       - name: Instalar SDK 37
         run: sdkmanager 'platforms;android-37' 'build-tools;36.0.0'
       - name: Configurar Gradle
