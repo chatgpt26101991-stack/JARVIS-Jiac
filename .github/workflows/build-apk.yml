@@ -16,7 +16,7 @@ jobs:
       - name: Obtener repositorio
         uses: actions/checkout@v4
       - name: Extraer codigo fuente
-        run: mkdir -p source && unzip -q JARVIS-Jiac-source.zip -d source
+        run: mkdir -p source && unzip -q JARVIS-Jiac-v0.2-source.zip -d source
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
