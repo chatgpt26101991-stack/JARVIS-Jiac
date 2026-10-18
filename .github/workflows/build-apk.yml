@@ -37,6 +37,20 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.5.0'
+      - name: Restaurar firma fija de pruebas
+        env:
+          JARVIS_DEBUG_KEYSTORE_B64: ${{ secrets.JARVIS_DEBUG_KEYSTORE_B64 }}
+        shell: bash
+        run: |
+          if [ -z "$JARVIS_DEBUG_KEYSTORE_B64" ]; then
+            echo '::error::Falta el secreto JARVIS_DEBUG_KEYSTORE_B64 en Settings -> Secrets and variables -> Actions.'
+            exit 1
+          fi
+          mkdir -p "$HOME/.android"
+          printf '%s' "$JARVIS_DEBUG_KEYSTORE_B64" | base64 --decode > "$HOME/.android/debug.keystore"
+          chmod 600 "$HOME/.android/debug.keystore"
+          keytool -list -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey >/dev/null
+          echo 'Firma de desarrollo restaurada correctamente.'
       - name: Ejecutar pruebas
         working-directory: source
         run: gradle :app:testDebugUnitTest
@@ -46,6 +60,6 @@ jobs:
       - name: Publicar APK
         uses: actions/upload-artifact@v4
         with:
-          name: JARVIS-Jiac-v0.1-debug-APK
+          name: JARVIS-Jiac-v0.4.2-debug-APK
           path: source/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
