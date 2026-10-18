@@ -1,0 +1,44 @@
+name: Compilar APK JARVIS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Obtener repositorio
+        uses: actions/checkout@v4
+      - name: Extraer codigo fuente
+        run: mkdir -p source && unzip -q JARVIS-Jiac-source.zip -d source
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Instalar Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Instalar SDK 37
+        run: sdkmanager 'platforms;android-37' 'build-tools;36.0.0'
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.5.0'
+      - name: Ejecutar pruebas
+        working-directory: source
+        run: gradle :app:testDebugUnitTest
+      - name: Generar APK
+        working-directory: source
+        run: gradle :app:assembleDebug
+      - name: Publicar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: JARVIS-Jiac-v0.1-debug-APK
+          path: source/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
