@@ -26,10 +26,13 @@ jobs:
         uses: android-actions/setup-android@v4
         with:
           packages: 'platform-tools'
-      - name: Instalar SDK 36 y ajustar proyecto
+      - name: Instalar SDK 36 y ajustar dependencias
         run: |
           sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
           sed -i 's/compileSdk = 37/compileSdk = 36/' source/app/build.gradle.kts
+          sed -i 's/compose-bom:2026.09.00/compose-bom:2025.09.00/' source/app/build.gradle.kts
+          sed -i 's/activity-compose:1.13.0/activity-compose:1.11.0/' source/app/build.gradle.kts
+          sed -i 's/lifecycle-viewmodel-compose:2.11.0/lifecycle-viewmodel-compose:2.9.4/' source/app/build.gradle.kts
       - name: Configurar Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
