@@ -16,7 +16,7 @@ jobs:
       - name: Obtener repositorio
         uses: actions/checkout@v4
       - name: Extraer codigo fuente
-        run: mkdir -p source && unzip -q JARVIS-Jiac-v0.4.2-source.zip -d source
+        run: mkdir -p source && unzip -q JARVIS-Jiac-v0.5.0-source.zip -d source
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
@@ -60,6 +60,6 @@ jobs:
       - name: Publicar APK
         uses: actions/upload-artifact@v4
         with:
-          name: JARVIS-Jiac-v0.4.2-debug-APK
+          name: JARVIS-Jiac-v0.5.0-debug-APK
           path: source/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
