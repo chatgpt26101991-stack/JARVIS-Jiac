@@ -15,7 +15,7 @@ jobs:
       - name: Obtener repositorio
         uses: actions/checkout@v4
       - name: Extraer codigo fuente
-        run: mkdir -p source && unzip -q JIVAX-Android-v0.7.4-source.zip -d source
+        run: mkdir -p source && unzip -q JIVAX-Android-v0.7.5-source.zip -d source
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
@@ -59,6 +59,6 @@ jobs:
       - name: Publicar APK
         uses: actions/upload-artifact@v4
         with:
-          name: JIVAX-Android-v0.7.4-debug-APK
+          name: JIVAX-Android-v0.7.5-debug-APK
           path: source/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
