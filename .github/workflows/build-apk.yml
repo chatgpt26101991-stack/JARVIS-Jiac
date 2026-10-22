@@ -1,5 +1,4 @@
-name: Compilar APK JARVIS
-
+name: Compilar APK JIVAX
 on:
   push:
     branches: [main]
@@ -16,7 +15,7 @@ jobs:
       - name: Obtener repositorio
         uses: actions/checkout@v4
       - name: Extraer codigo fuente
-        run: mkdir -p source && unzip -q JARVIS-Jiac-v0.7.3-source.zip -d source
+        run: mkdir -p source && unzip -q JIVAX-Android-v0.7.4-source.zip -d source
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
@@ -39,15 +38,15 @@ jobs:
           gradle-version: '9.5.0'
       - name: Restaurar firma fija de pruebas
         env:
-          JARVIS_DEBUG_KEYSTORE_B64: ${{ secrets.JARVIS_DEBUG_KEYSTORE_B64 }}
+          JIVAX_DEBUG_KEYSTORE_B64: ${{ secrets.JIVAX_DEBUG_KEYSTORE_B64 || secrets.JARVIS_DEBUG_KEYSTORE_B64 }}
         shell: bash
         run: |
-          if [ -z "$JARVIS_DEBUG_KEYSTORE_B64" ]; then
-            echo '::error::Falta el secreto JARVIS_DEBUG_KEYSTORE_B64 en Settings -> Secrets and variables -> Actions.'
+          if [ -z "$JIVAX_DEBUG_KEYSTORE_B64" ]; then
+            echo '::error::Falta JIVAX_DEBUG_KEYSTORE_B64 (o el secreto anterior usado para conservar la firma).'
             exit 1
           fi
           mkdir -p "$HOME/.android"
-          printf '%s' "$JARVIS_DEBUG_KEYSTORE_B64" | base64 --decode > "$HOME/.android/debug.keystore"
+          printf '%s' "$JIVAX_DEBUG_KEYSTORE_B64" | base64 --decode > "$HOME/.android/debug.keystore"
           chmod 600 "$HOME/.android/debug.keystore"
           keytool -list -keystore "$HOME/.android/debug.keystore" -storepass android -alias androiddebugkey >/dev/null
           echo 'Firma de desarrollo restaurada correctamente.'
@@ -56,10 +55,10 @@ jobs:
         run: gradle :app:testDebugUnitTest
       - name: Generar APK
         working-directory: source
-        run: gradle :app:assembleDebug
+        run: gradle :app:assembleDebug --stacktrace
       - name: Publicar APK
         uses: actions/upload-artifact@v4
         with:
-          name: JARVIS-Jiac-v0.7.3-debug-APK
+          name: JIVAX-Android-v0.7.4-debug-APK
           path: source/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
